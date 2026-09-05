@@ -1,0 +1,15 @@
+.env
+.cache/
+__pycache__/
+*.py[cod]
+*.log
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.out
+*.synctex.gz
+data/eval_runs/
+generate_attack_pages/output/
+configs/environments.json

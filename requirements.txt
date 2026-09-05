@@ -1,0 +1,4 @@
+requests>=2.31
+openai>=1.0
+unidecode>=1.3
+pytest>=8.0

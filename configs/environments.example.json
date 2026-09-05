@@ -1,0 +1,8 @@
+{
+  "environments": {
+    "clean": {"corpus": "data/examples/corpora/clean.jsonl"},
+    "L1": {"corpus": "data/examples/corpora/l1.jsonl"},
+    "L2": {"corpus": "data/examples/corpora/l2.jsonl"},
+    "L3": {"corpus": "data/examples/corpora/l3.jsonl"}
+  }
+}

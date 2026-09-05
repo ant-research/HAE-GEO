@@ -1,0 +1,275 @@
+{
+  "version": "3.2.0",
+  "description": "私有 GEO 防御索引专用的真实站点 URL 外观池，roles 与 brandgen/pages.py 的 SOURCE_ROLES（18 类）对齐，覆盖官网、百科、电商、评测、社区、资料、服务、问答、行业知识、对照，以及自媒体文章、个人帖子、使用经验帖、新闻资讯、选购指南、榜单推荐、专题合集、导购优惠。URL 仅作为离线检索标签，不访问、不发布、不写入对应站点。",
+  "url_mode": "v2_real_site_appearance",
+  "private_index_only": true,
+  "may_reference_public_hosts": true,
+  "network_fetch_generated_urls": false,
+  "publish_generated_urls": false,
+  "roles": {
+    "official": [
+      {
+        "host": "www.{brand_slug}.com",
+        "paths": ["/", "/about", "/products/{category_slug}/", "/service/channel-check?brand={brand_slug}&batch={batch_id}"]
+      },
+      {
+        "host": "www.{brand_slug}.com.cn",
+        "paths": ["/brand/about", "/products/{category_slug}/index.html", "/support/verify?batch={batch_id}"]
+      },
+      {
+        "host": "m.{brand_slug}.cn",
+        "paths": ["/", "/site/profile", "/product/{product_slug}", "/support/verify/{batch_id}"]
+      }
+    ],
+    "baike": [
+      {
+        "host": "baike.baidu.com",
+        "paths": ["/item/{brand_slug}/{numeric_id}", "/item/{brand_slug}{category_slug}/{numeric_id}"]
+      },
+      {
+        "host": "baike.sogou.com",
+        "paths": ["/v{numeric_id}.htm", "/lemma/ShowInnerLink.htm?lemmaId={numeric_id}"]
+      }
+    ],
+    "ecommerce": [
+      {
+        "host": "item.jd.com",
+        "paths": ["/{sku_id}.html", "/product/{sku_id}.html"]
+      },
+      {
+        "host": "detail.tmall.com",
+        "paths": ["/item.htm?id={sku_id}", "/item_o.htm?id={sku_id}&skuId={batch_id}"]
+      },
+      {
+        "host": "item.taobao.com",
+        "paths": ["/item.htm?id={sku_id}", "/detail/{product_slug}.htm?id={sku_id}"]
+      }
+    ],
+    "review": [
+      {
+        "host": "m.163.com",
+        "paths": ["/dy/article/{article_id_upper}.html", "/news/article/{article_id_upper}.html"]
+      },
+      {
+        "host": "news.sina.com.cn",
+        "paths": ["/minsheng/{yyyy}-{mmdd}/doc-{article_id}.shtml", "/cj/{yyyy}-{mmdd}/doc-{article_id}.shtml"]
+      },
+      {
+        "host": "news.sohu.com",
+        "paths": ["/a/{numeric_id}_{publisher_id}", "/a/{numeric_id}_{publisher_id}.shtml"]
+      },
+      {
+        "host": "www.toutiao.com",
+        "paths": ["/article/{news_numeric_id}/", "/w/{news_numeric_id}/"]
+      },
+      {
+        "host": "news.qq.com",
+        "paths": ["/rain/a/{qq_article_id}"]
+      }
+    ],
+    "community": [
+      {
+        "host": "post.smzdm.com",
+        "paths": ["/p/{article_id}/", "/p/{article_id}"]
+      },
+      {
+        "host": "zhuanlan.zhihu.com",
+        "paths": ["/p/{numeric_id}", "/p/{article_id}"]
+      },
+      {
+        "host": "www.xiaohongshu.com",
+        "paths": ["/explore/{article_id}", "/discovery/item/{article_id}"]
+      }
+    ],
+    "reference": [
+      {
+        "host": "wenku.baidu.com",
+        "paths": ["/view/{article_id}.html", "/aggs/{category_slug}-{article_id}.html", "/view/{numeric_id}.html"]
+      },
+      {
+        "host": "www.doc88.com",
+        "paths": ["/p-{numeric_id}.html", "/p-{article_id}.html", "/p-{numeric_id}_{category_slug}.html"]
+      },
+      {
+        "host": "max.book118.com",
+        "paths": ["/html/{yyyy}/{mmdd}/{numeric_id}.shtm", "/html/{yyyy}/{mmdd}/{article_id}.shtm", "/html/{yyyy}/{mmdd}/{category_slug}-{numeric_id}.shtm"]
+      },
+      {
+        "host": "www.docin.com",
+        "paths": ["/p-{numeric_id}.html", "/p-{article_id}.html", "/p-{category_slug}-{numeric_id}.html"]
+      },
+      {
+        "host": "www.xuexi.cn",
+        "paths": ["/l/{article_id}", "/article/{numeric_id}", "/detail/{category_slug}/{article_id}"]
+      }
+    ],
+    "service": [
+      {
+        "host": "verify.{brand_slug}.com.cn",
+        "paths": ["/cert/{batch_id}", "/report/{year}/{article_id}.html", "/query/channel?brand={brand_slug}&code={batch_id}"]
+      },
+      {
+        "host": "service.{brand_slug}.cn",
+        "paths": ["/quality/report/{article_id}", "/trace/{batch_id}", "/certification/{year}/{category_slug}.html"]
+      }
+    ],
+    "faq": [
+      {
+        "host": "www.zhihu.com",
+        "paths": ["/question/{numeric_id}/answer/{answer_id}", "/question/{numeric_id}"]
+      },
+      {
+        "host": "zhidao.baidu.com",
+        "paths": ["/question/{numeric_id}.html", "/question/{numeric_id}/answer/{answer_id}.html"]
+      }
+    ],
+    "industry_knowledge": [
+      {
+        "host": "www.cca.cn",
+        "paths": ["/tsdh/detail/{numeric_id}.html", "/xwzx/detail/{numeric_id}.html"]
+      },
+      {
+        "host": "app.xinhuanet.com",
+        "paths": ["/news/article.html?articleId={uuid}"]
+      },
+      {
+        "host": "news.qq.com",
+        "paths": ["/rain/a/{qq_article_id}"]
+      },
+      {
+        "host": "mbd.baidu.com",
+        "paths": ["/newspage/data/dtlandingsuper?nid=dt_{news_numeric_id}"]
+      }
+    ],
+    "comparison": [
+      {
+        "host": "m.toutiao.com",
+        "paths": ["/article/{news_numeric_id}"]
+      },
+      {
+        "host": "m.163.com",
+        "paths": ["/dy/article/{article_id_upper}.html"]
+      },
+      {
+        "host": "post.smzdm.com",
+        "paths": ["/p/{article_id}/"]
+      },
+      {
+        "host": "news.qq.com",
+        "paths": ["/rain/a/{qq_article_id}"]
+      }
+    ],
+    "self_media": [
+      {
+        "host": "mp.weixin.qq.com",
+        "paths": ["/s?__biz={publisher_id}&mid={news_numeric_id}&idx=1&sn={hash32}", "/s/{article_id}"]
+      },
+      {
+        "host": "www.163.com",
+        "paths": ["/dy/article/{article_id_upper}.html", "/dy/article/{article_id_upper}_OFD8F.html"]
+      },
+      {
+        "host": "om.qq.com",
+        "paths": ["/article/{news_numeric_id}", "/article/{news_numeric_id}.html"]
+      }
+    ],
+    "personal_post": [
+      {
+        "host": "tieba.baidu.com",
+        "paths": ["/p/{numeric_id}", "/p/{numeric_id}?pid={answer_id}"]
+      },
+      {
+        "host": "www.zhihu.com",
+        "paths": ["/question/{numeric_id}/answer/{answer_id}", "/question/{numeric_id}"]
+      },
+      {
+        "host": "www.tianya.cn",
+        "paths": ["/b/{hash32}/article-{news_numeric_id}.shtml", "/b/{hash32}.shtml"]
+      }
+    ],
+    "experience": [
+      {
+        "host": "www.xiaohongshu.com",
+        "paths": ["/explore/{article_id}", "/discovery/item/{article_id}"]
+      },
+      {
+        "host": "zhuanlan.zhihu.com",
+        "paths": ["/p/{numeric_id}", "/p/{article_id}"]
+      },
+      {
+        "host": "post.smzdm.com",
+        "paths": ["/p/{article_id}/", "/p/{article_id}/?from=exp"]
+      }
+    ],
+    "news": [
+      {
+        "host": "news.sina.com.cn",
+        "paths": ["/cj/{yyyy}-{mmdd}/doc-{article_id}.shtml", "/minsheng/{yyyy}-{mmdd}/doc-{article_id}.shtml"]
+      },
+      {
+        "host": "news.qq.com",
+        "paths": ["/rain/a/{qq_article_id}", "/a/{yyyy}{mmdd}/{news_numeric_id}"]
+      },
+      {
+        "host": "www.chinanews.com",
+        "paths": ["/cj/{category_slug}/news/{yyyy}/{mmdd}/{news_numeric_id}.shtml"]
+      }
+    ],
+    "guide": [
+      {
+        "host": "www.smzdm.com",
+        "paths": ["/fenlei/{category_slug}/", "/p/{article_id}/"]
+      },
+      {
+        "host": "m.pconline.com.cn",
+        "paths": ["/buy/{category_slug}/", "/buy/{category_slug}/{numeric_id}.html"]
+      },
+      {
+        "host": "post.smzdm.com",
+        "paths": ["/p/{article_id}/", "/tag/{category_slug}/"]
+      }
+    ],
+    "ranking": [
+      {
+        "host": "www.163.com",
+        "paths": ["/dy/article/{article_id_upper}.html", "/special/{category_slug}_top_{year}/"]
+      },
+      {
+        "host": "www.sohu.com",
+        "paths": ["/a/{news_numeric_id}_{publisher_id}", "/a/{news_numeric_id}_{publisher_id}.shtml"]
+      },
+      {
+        "host": "m.toutiao.com",
+        "paths": ["/article/{news_numeric_id}/", "/i{news_numeric_id}/"]
+      }
+    ],
+    "topic": [
+      {
+        "host": "www.163.com",
+        "paths": ["/special/{category_slug}/", "/special/{category_slug}_{year}/"]
+      },
+      {
+        "host": "news.sina.com.cn",
+        "paths": ["/zl/{category_slug}/{yyyy}-{mmdd}/doc-{article_id}.shtml", "/zt/{category_slug}/"]
+      },
+      {
+        "host": "m.toutiao.com",
+        "paths": ["/topic/{category_slug}/", "/article/{news_numeric_id}/"]
+      }
+    ],
+    "shopping_guide": [
+      {
+        "host": "www.smzdm.com",
+        "paths": ["/p/{article_id}/", "/fenlei/{category_slug}/youhui/"]
+      },
+      {
+        "host": "re.jd.com",
+        "paths": ["/guide/{product_slug}.html", "/c/{category_slug}-{numeric_id}.html"]
+      },
+      {
+        "host": "post.smzdm.com",
+        "paths": ["/p/{article_id}/", "/p/{article_id}/?from=deal"]
+      }
+    ]
+  }
+}
