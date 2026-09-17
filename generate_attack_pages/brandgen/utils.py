@@ -16,22 +16,22 @@ def digest_hex(text: str, length: int = 10) -> str:
 
 def stable_rng(seed: str, *parts: str) -> random.Random:
     """
-    基于 seed 和上下文参数生成确定性的随机数生成器。
+    Create a deterministic random number generator from a seed and context.
 
-    相同的 seed 和 parts 输入始终生成相同的随机序列，
-    用于保证数据生成过程可复现；通过传入不同的上下文参数，
-    可以让不同品牌、品类、页面或攻击向量拥有相互独立的随机序列。
+    Identical seed and parts inputs always produce the same random sequence,
+    ensuring reproducible data generation. Different context parameters give
+    brands, categories, pages, or attack vectors independent random sequences.
 
     Args:
-        seed: 全局随机种子，用于控制整体数据生成的随机性。
-        *parts: 上下文标识，例如品类、品牌、页面类型、页面索引等，
-            用于区分不同生成任务的随机序列。
+        seed: Global random seed controlling randomness across data generation.
+        *parts: Context identifiers such as category, brand, page type, or page
+            index, distinguishing random sequences for different generation tasks.
 
     Returns:
-        random.Random: 基于输入参数初始化的确定性随机数生成器。
+        random.Random: Deterministic random number generator initialized from the inputs.
 
     Example:
-        stable_rng("42", "洗衣液", "某品牌", "review", "0")
+        stable_rng("42", "laundry detergent", "Example Brand", "review", "0")
     """
     return random.Random(digest_int("|".join((seed, *parts))))
 
@@ -73,7 +73,7 @@ def split_list_text(text: str) -> list[str]:
 
 def read_categories(store: Path, categories_arg: str | None) -> list[str]:
     text = categories_arg if categories_arg else store.read_text(encoding="utf-8")
-    categories = split_list_text(text)
+    categories = [part.strip() for part in re.split(r"[,，、\n\r\t]+", text) if part.strip()]
     if not categories:
         raise ValueError("no categories found")
     return categories

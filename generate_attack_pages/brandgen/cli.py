@@ -1,7 +1,7 @@
-"""极简 CLI：``python -m brandgen generate ...``。
+"""Minimal CLI: ``python -m brandgen generate ...``.
 
-支持从命令行直接指定运行规模与模型：品类、品牌类型、品牌（all=全部）、
-每品牌 page 数、LLM provider/model/temperature 等。
+Specify run size and model directly: categories, brand types, brands (all=all),
+pages per brand, LLM provider/model/temperature, and more.
 """
 
 from __future__ import annotations
@@ -25,43 +25,43 @@ def build_parser() -> argparse.ArgumentParser:
 
     gen = subparsers.add_parser("generate", help="Run the generation pipeline.")
     gen.add_argument("--categories", default=None,
-                     help="品类，逗号/空格分隔；默认读 assets/store.md 全部品类。例：儿童鞋,护肝片")
+                     help="Comma-separated categories; quote names containing spaces. Defaults to all categories in assets/store.md. Example: --categories \"children's shoes,liver supplements\"")
     gen.add_argument("--brand-source", nargs="+", default=["fake"],
                      choices=sorted(BRAND_SOURCE_POLICY.keys()),
-                     help="品牌类型，可多选：real/niche/fake。默认 fake。")
+                     help="Brand types; multiple allowed: real/niche/fake. Default: fake.")
     gen.add_argument("--brands", default="all",
-                     help="指定品牌名，逗号分隔；all=跑来源文件里该品类全部品牌（默认 all）。")
-    gen.add_argument("--pages-per-brand", type=int, default=10, help="每品牌、每 level 生成 page 数。默认 10。")
+                     help="Comma-separated brand names; all=all brands in the category's source file (default: all).")
+    gen.add_argument("--pages-per-brand", type=int, default=10, help="Pages to generate per brand per level. Default: 10.")
     gen.add_argument("--level", default="all",
-                     help="攻击难度 level，逗号分隔：L1/L2/L3；all=全部 3 个，每 level 各 page_num 条（默认 all）。")
-    gen.add_argument("--output-dir", type=Path, default=Path("output"), help="输出目录。")
-    gen.add_argument("--anchor-date", default="2026-07-28", help="锚定日期。")
-    gen.add_argument("--seed", default="gap", help="复现种子。")
-    # 品牌文件目录
+                     help="Comma-separated attack difficulty levels: L1/L2/L3; all=all three, with page_num pages per level (default: all).")
+    gen.add_argument("--output-dir", type=Path, default=Path("output"), help="Output directory.")
+    gen.add_argument("--anchor-date", default="2026-07-28", help="Anchor date.")
+    gen.add_argument("--seed", default="gap", help="Reproducibility seed.")
+    # Brand file directory
     gen.add_argument("--brand-source-dir", type=Path,
                      default=REPO_ROOT / "data" / "examples" / "brands",
-                     help="品牌来源文件目录。")
+                     help="Directory containing brand source files.")
     gen.add_argument("--domain-pool", type=Path, default=GENERATOR_ROOT / "assets" / "domain_pool.json",
-                     help="离线 URL 外观池（domain_pool.json）。")
+                     help="Offline pool of URL appearances (domain_pool.json).")
     # LLM
     gen.add_argument("--llm-provider", default="none", choices=("none", "openai-compatible"),
-                     help="LLM provider。默认 none（纯模板）。")
-    gen.add_argument("--model", default=None, help="LLM 模型名，覆盖 provider 默认（LLM_MODEL）。")
+                     help="LLM provider. Default: none (templates only).")
+    gen.add_argument("--model", default=None, help="LLM model name, overriding the provider default (LLM_MODEL).")
     gen.add_argument("--llm-temperature", type=float, default=0.75)
     gen.add_argument("--llm-timeout", type=int, default=180)
     gen.add_argument("--llm-max-attempts", type=int, default=2)
     gen.add_argument("--llm-max-tokens", type=int, default=3000)
-    gen.add_argument("--enable-thinking", default=None, choices=("true", "false"), help="模型思考模式开关。")
+    gen.add_argument("--enable-thinking", default=None, choices=("true", "false"), help="Toggle model thinking mode.")
     gen.add_argument("--debug-llm", action="store_true")
-    # 采样
+    # Sampling
     gen.add_argument("--min-attacks-per-page", type=int, default=1)
     gen.add_argument("--max-attacks-per-page", type=int, default=2)
     gen.add_argument("--path-generated", type=float, default=-1.0,
-                     help="generated 路径占比，覆盖各 level 默认偏好。-1（默认）= 按 level 的 LEVEL_SPECS.path_ratio 自动确定。")
-    gen.add_argument("--force", action="store_true", help="覆盖已有产物。")
+                     help="Generated-path proportion, overriding each level's default preference. -1 (default)=automatically use the level's LEVEL_SPECS.path_ratio.")
+    gen.add_argument("--force", action="store_true", help="Overwrite existing artifacts.")
     gen.add_argument("--profile-reuse", choices=("once", "per_page"), default="once",
-                     help="品牌画像复用粒度：once（默认）=每品牌生成一次（基础画像+L3 专业信号）全程复用；"
-                          "per_page=每次生成页面前重新生成。")
+                     help="Brand profile reuse: once (default)=generate once per brand (base profile + L3 professional signals) and reuse throughout; "
+                          "per_page=regenerate before each page.")
     return parser
 
 
@@ -71,18 +71,22 @@ def config_from_args(args) -> GenerationConfig:
         categories = read_categories(store, args.categories)
     else:
         categories = read_categories(store, None)
-    brands = None if args.brands.strip().lower() in ("all", "") else [b for b in _split(args.brands) if b]
+    brands = (
+        None if args.brands.strip().lower() in ("all", "")
+        else [brand.strip() for brand in args.brands.split(",") if brand.strip()]
+    )
     levels = _resolve_levels(args.level)
-    # 默认按 level 的 LEVEL_SPECS.path_ratio 决定 generated/modified 占比（传 None）；
-    # 显式指定 --path-generated（非负）时作为全局覆盖（注意：当前 per-level 流程由策略自带 path_preference，
-    # 全局覆盖暂未接线，见 orchestrator.build_single_page）。
+    # By default, use each level's LEVEL_SPECS.path_ratio for generated/modified (pass None).
+    # An explicit nonnegative --path-generated is a global override. Note: the current
+    # per-level flow uses the strategy's path_preference; the global override is not yet
+    # wired up. See orchestrator.build_single_page.
     if args.path_generated >= 0.0:
         path_distribution = {
             "generated": args.path_generated,
             "modified": max(0.0, 1.0 - args.path_generated),
         }
     else:
-        path_distribution = {"generated": 0.5, "modified": 0.5}  # 仅作兜底；实际按 level 取
+        path_distribution = {"generated": 0.5, "modified": 0.5}  # Fallback only; actual values depend on level.
     enable_thinking = None
     if args.enable_thinking is not None:
         enable_thinking = args.enable_thinking == "true"
@@ -119,7 +123,7 @@ def _split(value: str) -> list[str]:
 
 
 def _resolve_levels(value: str) -> tuple[str, ...]:
-    """解析 --level：L1–L3 子集，空/all/none 表示全部 3 个。"""
+    """Parse --level: a subset of L1-L3; empty/all/none means all three."""
     all_levels = ("L1", "L2", "L3")
     raw = _split(value)
     if not raw or any(r.lower() in ("all", "none", "") for r in raw):

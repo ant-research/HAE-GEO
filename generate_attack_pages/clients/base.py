@@ -101,4 +101,4 @@ class BaseModelClient(ABC):
         if response.success:
             yield response.content
         else:
-            yield f"[错误: {response.error_message}]"
+            yield f"[Error: {response.error_message}]"

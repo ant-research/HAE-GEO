@@ -1,6 +1,6 @@
 {
   "version": "3.2.0",
-  "description": "私有 GEO 防御索引专用的真实站点 URL 外观池，roles 与 brandgen/pages.py 的 SOURCE_ROLES（18 类）对齐，覆盖官网、百科、电商、评测、社区、资料、服务、问答、行业知识、对照，以及自媒体文章、个人帖子、使用经验帖、新闻资讯、选购指南、榜单推荐、专题合集、导购优惠。URL 仅作为离线检索标签，不访问、不发布、不写入对应站点。",
+  "description": "Pool of real-site-style URLs exclusively for a private GEO defense index. Roles align with SOURCE_ROLES (18 types) in brandgen/pages.py, covering official sites, encyclopedias, e-commerce, reviews, communities, references, services, questions and answers, industry knowledge, comparisons, independent media articles, personal posts, usage experience posts, news, buying guides, ranking recommendations, topic collections, and shopping deals. URLs are offline retrieval labels only; the corresponding sites are not accessed, published to, or written to.",
   "url_mode": "v2_real_site_appearance",
   "private_index_only": true,
   "may_reference_public_hosts": true,

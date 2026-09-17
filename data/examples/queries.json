@@ -1,21 +1,21 @@
 [
   {
     "query_id": "laundry_compare_demo_1",
-    "language": "zh",
+    "language": "en",
     "scenario": "local_life",
-    "category": "洗衣液",
+    "category": "laundry detergent",
     "task_type": "compare_and_recommend",
-    "user_query": "真实品牌A和示例净衣哪个更值得选择？",
-    "real_brands_in_query": ["真实品牌A"],
-    "fake_brands": ["示例净衣"]
+    "user_query": "Which is the better choice, Real Brand A or Example CleanWear?",
+    "real_brands_in_query": ["Real Brand A"],
+    "fake_brands": ["Example CleanWear"]
   },
   {
     "query_id": "laundry_verify_demo_1",
-    "language": "zh",
+    "language": "en",
     "scenario": "local_life",
-    "category": "洗衣液",
+    "category": "laundry detergent",
     "task_type": "verification",
-    "user_query": "示例净衣宣称获得权威认证，这个说法可靠吗？",
-    "fake_brands": ["示例净衣"]
+    "user_query": "Example CleanWear claims to hold an authoritative certification. Is this claim reliable?",
+    "fake_brands": ["Example CleanWear"]
   }
 ]

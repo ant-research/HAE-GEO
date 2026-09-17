@@ -70,7 +70,7 @@ def search_geo_full_content(query: str, *, knowledge_name: str, env: str = "loca
         "success": True,
         "query": query,
         "documents": visible_docs,
-        "instruction": "请结合上述搜索返回的正文证据回答最初问题。",
+        "instruction": "Answer the original question using the page-content evidence returned above.",
     }
     raw = {
         "success": True,

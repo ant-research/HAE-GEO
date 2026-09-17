@@ -172,8 +172,9 @@ def call_json(
             {
                 "role": "user",
                 "content": (
-                    "上一轮输出无法使用。请只输出严格合法 JSON，不要 Markdown、解释或额外字段。"
-                    f"错误：{last_error}"
+                    "The previous output was unusable. Output only strictly valid JSON, "
+                    "without Markdown, explanations, or extra fields. "
+                    f"Error: {last_error}"
                 ),
             },
         ]

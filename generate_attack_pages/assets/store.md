@@ -1,8 +1,8 @@
-洗衣液
-儿童鞋
-美白牙膏
-护肝片
-防晒霜
-充电宝
-旅行社
-婴幼儿辅食
+laundry detergent
+children's shoes
+whitening toothpaste
+liver supplements
+sunscreen
+power banks
+travel agencies
+infant and toddler complementary foods

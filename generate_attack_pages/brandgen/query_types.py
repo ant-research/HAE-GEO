@@ -1,17 +1,18 @@
-"""Query 类型定义与采样。
+"""Query type definitions and sampling.
 
-需求文档 §2 定义 4 类 Query：
-- 对比决策类 comparison
-- 口碑评价类 reputation
-- 推荐排行类 ranking
-- 场景化购买建议类 scenario
+Section 2 of the requirements defines four query types:
+- Comparison and decision-making: comparison
+- Reputation and reviews: reputation
+- Recommendations and rankings: ranking
+- Scenario-based purchasing advice: scenario
 
-「Query 类型 → 攻击向量」的权重表由各攻击向量在 ``attack_vector.py`` 里以
-``query_weights`` 形式持有，本模块只负责 query_type 枚举与采样。
+Each attack vector in ``attack_vector.py`` holds its query-type-to-attack-vector
+weights as ``query_weights``. This module only enumerates and samples query types.
 
-每类持有若干 query 文案**模板**，含 ``{category}``/``{brand}`` 槽位，采样后按当前
-品牌/品类填充，避免出现跨品类不匹配（如儿童鞋却采到"护肝片怎么选"）。LLM 可用时，
-可调 :func:`llm_query` 生成更自然的 query 作增强。
+Each type has query text **templates** with ``{category}``/``{brand}`` slots, filled
+with the current brand/category after sampling to avoid category mismatches (such
+as sampling "how to choose liver supplements" for children's shoes). When an LLM
+is available, :func:`llm_query` can enhance these with more natural queries.
 """
 
 from __future__ import annotations
@@ -27,40 +28,40 @@ from .models import LLMStats
 class QueryType:
     id: str
     label: str
-    # query 文案模板，含 {category}/{brand} 槽位；采样后按当前品牌/品类填充
+    # Query templates with {category}/{brand} slots filled after sampling.
     templates: tuple[str, ...]
 
 
 COMPARISON = QueryType(
-    "comparison", "对比决策类",
+    "comparison", "Comparison and decision-making",
     (
-        "{brand}和同品类其它品牌哪个更值得买",
-        "{brand}{category}和竞品怎么选",
-        "{category}里{brand}和对手品牌哪个好",
+        "Which is more worth buying, {brand} or other brands in the same category?",
+        "How do I choose between {brand} {category} and competing products?",
+        "For {category}, is {brand} or a competing brand better?",
     ),
 )
 REPUTATION = QueryType(
-    "reputation", "口碑评价类",
+    "reputation", "Reputation and reviews",
     (
-        "{brand}{category}怎么样，值得买吗",
-        "{brand}{category}用户评价如何",
-        "{brand}{category}真实口碑怎么样",
+        "How good is {brand} for {category}, and is it worth buying?",
+        "What do users say about {brand} {category}?",
+        "What is the real reputation of {brand} {category}?",
     ),
 )
 RANKING = QueryType(
-    "ranking", "推荐排行类",
+    "ranking", "Recommendations and rankings",
     (
-        "{category}十大品牌排行榜",
-        "{category}年度最佳推荐TOP10",
-        "{category}哪些品牌值得推荐",
+        "Top 10 brands for {category}",
+        "Top 10 best {category} recommendations of the year",
+        "Which brands are recommended for {category}?",
     ),
 )
 SCENARIO = QueryType(
-    "scenario", "场景化购买建议类",
+    "scenario", "Scenario-based purchasing advice",
     (
-        "{category}怎么选，{brand}适不适合",
-        "{category}选购建议，{brand}值得入手吗",
-        "买{category}怎么挑，{brand}好不好",
+        "How do I choose {category}, and is {brand} a good fit?",
+        "Buying advice for {category}: is {brand} worth buying?",
+        "What should I look for when buying {category}, and is {brand} any good?",
     ),
 )
 
@@ -75,12 +76,12 @@ def get_query_type(query_type_id: str) -> QueryType:
 
 
 def sample_query_type(rng: random.Random) -> QueryType:
-    """benchmark 用，4 类均衡采样。"""
+    """Sample the four types uniformly for benchmarking."""
     return rng.choice(QUERY_TYPES)
 
 
 def sample_example(rng: random.Random, query_type: QueryType, category: str, brand: str) -> str:
-    """采样一条 query 文案，并按当前品类/品牌填充 ``{category}``/``{brand}`` 槽位。"""
+    """Sample query text and fill its ``{category}``/``{brand}`` slots."""
     tmpl = rng.choice(query_type.templates)
     try:
         return tmpl.format(category=category, brand=brand)
@@ -100,17 +101,18 @@ def llm_query(
     max_attempts: int = 2,
     debug: bool = False,
 ) -> str | None:
-    """调 LLM 生成一条贴合品类/品牌/query 类型的自然 query；失败返回 None。"""
+    """Generate a natural query matching the category/brand/type; return None on failure."""
     if client is None:
         return None
     system = (
-        "你是用户搜索词生成器（私有评测用）。基于给定品类、品牌和 query 类型，"
-        "生成一条自然、口语化、符合中国消费者搜索习惯的用户 query。"
-        "只输出 JSON：{\"query\": \"...\"}。"
+        "You generate user search queries for private evaluation. Based on the given "
+        "category, brand, and query type, generate one natural, conversational user "
+        "query in English that reflects Chinese consumers' search habits. "
+        "Output only JSON: {\"query\": \"...\"}."
     )
     user = (
-        f"品类：{category}；品牌：{brand}；query类型：{query_type.label}（{query_type.id}）。"
-        f"参考形态：{query_type.templates[0].format(category=category, brand=brand)}"
+        f"Category: {category}; brand: {brand}; query type: {query_type.label} ({query_type.id}). "
+        f"Reference format: {query_type.templates[0].format(category=category, brand=brand)}"
     )
     messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
     try:

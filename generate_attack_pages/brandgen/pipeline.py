@@ -1,7 +1,7 @@
-"""薄 re-export：保持旧 ``from .pipeline import generate, generate_one_brand`` 可用。
+"""Thin re-export preserving ``from .pipeline import generate, generate_one_brand``.
 
-生成本体的实现见 :mod:`brandgen.orchestrator`；本需求文档见
-``PIPELINE_REQUIREMENTS.md``（原 pipeline.py 内容）。
+See :mod:`brandgen.orchestrator` for the generation implementation and
+``PIPELINE_REQUIREMENTS.md`` for the requirements (formerly in pipeline.py).
 """
 
 from .orchestrator import (  # noqa: F401
