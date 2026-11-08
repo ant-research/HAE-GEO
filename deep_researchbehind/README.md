@@ -28,8 +28,7 @@ through Search, and page text through Scrape.
 
 The schema gives titles weight 5 and uses Xunsearch BM25 with OR matching and
 automatic synonyms disabled. These settings stay identical across levels.
-This is a BM25 backend, not the paper's BM25+dense+neural-reranker service;
-retrieval results and benchmark scores can differ.
+
 
 ## Docker quick start
 
@@ -149,5 +148,4 @@ python3 deep_researchbehind/smoke_test.py \
 
 The unit/integration tests use an injected ranking fixture for the PHP boundary;
 they validate indexing inputs, API behavior, isolation, and Search-to-Scrape
-contracts without claiming to execute Xunsearch. The smoke test calls a live
-engine through the generated configuration and must run after deployment.
+contracts without claiming to execute Xunsearch. 
