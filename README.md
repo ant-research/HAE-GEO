@@ -34,6 +34,8 @@ the English migration covers code, prompts, documentation, and `data/examples/`.
 - `rule&rubric/geo_evaluate.py`: E-A-V-R-Y rules and split six-metric Judge.
 - `data/examples/`: synthetic query, brand, and environment examples only.
 - `benchmark_data/`: benchmark queries, poisoned pages, and a partial clean-page release.
+- `collected_data/`: direct Axios webpage collection, URL manifests, corpus
+  hashing, and local Clean/L1/L2/L3 environment construction.
 
 ## Benchmark data
 
@@ -61,6 +63,40 @@ third-party content. Any extension or redistribution of the corpus should
 exclude restricted pages unless the necessary permission has been obtained.
 Results obtained using only the released subset may differ from those obtained
 with the original full retrieval environment.
+
+### Collect clean webpage bodies
+
+The released clean records contain metadata and snippets. To collect full-page
+text from a supplied URL pool, use the standalone Axios pipeline:
+
+```bash
+npm ci --prefix collected_data
+python3 collected_data/corpus_tools.py manifest
+LIMIT=20 bash collected_data/run_pipeline.sh
+export GEO_ENVIRONMENTS_CONFIG="$PWD/collected_data/output/environments/environments.json"
+```
+
+The pipeline deduplicates URLs, extracts visible text, records retrieval times
+and SHA256 hashes, and builds four environments with a shared clean background.
+It uses no internal search endpoint or cloud-storage account. It can also read
+your own URL list. See [collected_data/README.md](collected_data/README.md) for
+input formats, collection settings, resume behavior, and manifest coverage.
+
+### Evaluator version and reproducibility artifacts
+
+`rule&rubric/geo_evaluate.py` contains the public deterministic trajectory
+parser and English rule vocabulary. It identifies itself as
+`trajectory-state-machine-v3-english-strict-recovery`. This language-adapted
+implementation is not a verified copy of the paper's frozen evaluator.
+`collected_data/manifests/evaluator_inventory.json` identifies the current
+file by SHA256 and exports its named vocabularies and prompt-version string.
+
+`collected_data/manifests/clean_urls.jsonl` provides a deduplicated URL manifest
+for the released clean subset. It does not cover all original clean pages or
+contain historical full-page bodies. Newly collected pages have their own
+content hashes and collection timestamps. These artifacts support inspection
+and new runs; they do not by themselves reproduce the paper's historical
+retrieval environment or certify identical scores.
 
 ## Install
 

@@ -1,0 +1,10 @@
+{
+  "coverage": "released clean-page subset only; not the complete original clean corpus",
+  "source_file": "clean_web_pages_subset.json",
+  "source_sha256": "402969628a47d7de0c07b69fa2ed2795a19f574cdbb60f2a58231cc2beb0786e",
+  "source_records": 54358,
+  "unique_urls": 54358,
+  "manifest_sha256": "a84d00547a26c51285ff8797c69b7bed10f9d9d1b90a590066e4d960ed288d2d",
+  "historical_body_hashes_available": false,
+  "note": "The source release has no full-page bodies or historical collection times. New crawl manifests record retrieval times and body/response hashes."
+}

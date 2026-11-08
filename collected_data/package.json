@@ -1,0 +1,12 @@
+{
+  "name": "hae-geo-clean-corpus",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20.19" },
+  "scripts": { "test": "node --test tests/*.test.mjs" },
+  "dependencies": {
+    "axios": "1.21.0",
+    "cheerio": "1.2.0",
+    "robots-parser": "3.0.1"
+  }
+}
