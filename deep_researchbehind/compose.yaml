@@ -1,0 +1,37 @@
+services:
+  xunsearch:
+    image: hae-geo-xunsearch:local
+    platform: linux/amd64
+    build:
+      context: .
+    init: true
+    command: ["bash", "/app/deep_researchbehind/start_engine.sh"]
+    volumes:
+      - xunsearch-data:/opt/xunsearch/data
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import socket; socket.create_connection(('127.0.0.1',8383),2).close(); socket.create_connection(('127.0.0.1',8384),2).close()"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+  gateway:
+    image: hae-geo-xunsearch:local
+    platform: linux/amd64
+    build:
+      context: .
+    init: true
+    environment:
+      XUNSEARCH_INDEX_SERVER: xunsearch:8383
+      XUNSEARCH_SEARCH_SERVER: xunsearch:8384
+    ports:
+      - "127.0.0.1:8765:8765"
+    volumes:
+      - ..:/workspace:ro
+      - ./output:/data
+    depends_on:
+      xunsearch:
+        condition: service_healthy
+
+volumes:
+  xunsearch-data:

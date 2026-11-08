@@ -35,6 +35,8 @@ the English migration covers code, prompts, documentation, and `data/examples/`.
 - `benchmark_data/`: benchmark queries, poisoned pages, and a partial clean-page release.
 - `collected_data/`: direct Axios webpage collection, URL manifests, corpus
   hashing, and local Clean/L1/L2/L3 environment construction.
+- `deep_researchbehind/`: optional Xunsearch BM25 indexing, local search
+  service, and an adapter for the existing Search--Scrape tools.
 
 ## Benchmark data
 
@@ -108,6 +110,17 @@ cp configs/environments.example.json configs/environments.json
 ```
 
 Export the values from `.env` in your shell. Never commit `.env`.
+
+## Optional Xunsearch retrieval backend
+
+The default local backend uses a simple lexical score. To run indexed BM25
+retrieval over the clean and poisoned pages, use
+[deep_researchbehind/README.md](deep_researchbehind/README.md). It includes
+Docker deployment, corpus import, separate Clean/L1/L2/L3 databases, an HTTP
+adapter, and live smoke-test commands. Point `GEO_ENVIRONMENTS_CONFIG` at its
+generated configuration to use the same agent/evaluation runners with
+Xunsearch. Search returns ranked metadata; Scrape reads the environment-scoped
+cached body. This backend does not include dense retrieval or a neural reranker.
 
 ## Generate controlled L1/L2/L3 pages
 

@@ -19,6 +19,7 @@ import hashlib
 import json
 import os
 import re
+import tempfile
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, Iterable, List
@@ -96,7 +97,13 @@ def _score(query: str, doc: Dict[str, Any]) -> float:
 
 
 def _cache_path(knowledge_name: str, url: str) -> Path:
-    namespace = hashlib.sha256(knowledge_name.encode("utf-8")).hexdigest()[:16]
+    identity = knowledge_name
+    entry = _environment_config().get(knowledge_name, {})
+    if isinstance(entry, dict) and entry.get("backend") == "xunsearch":
+        identity = json.dumps({"environment": knowledge_name, "backend": "xunsearch",
+                               "endpoint": str(entry.get("endpoint", "")).rstrip("/"),
+                               "revision": entry.get("index_revision")}, sort_keys=True)
+    namespace = hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16]
     key = hashlib.sha256(url.encode("utf-8")).hexdigest()
     return CACHE_ROOT / namespace / f"{key}.json"
 
@@ -107,7 +114,18 @@ def _cache_document(knowledge_name: str, doc: Dict[str, Any]) -> None:
         return
     path = _cache_path(knowledge_name, url)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
+    payload = json.dumps(doc, ensure_ascii=False)
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent, delete=False) as handle:
+        temporary = Path(handle.name)
+        try:
+            handle.write(payload)
+        except BaseException:
+            temporary.unlink(missing_ok=True)
+            raise
+    try:
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def _snippet(doc: Dict[str, Any], limit: int = 240) -> str:
@@ -128,10 +146,18 @@ def search_geo_knowledge_base(
 ) -> str:
     """Retrieve local documents while preserving the paper's tool response schema."""
     del env, threshold, rankingThreshold, query_method
-    docs = _load_corpus(str(_resolve_corpus(knowledge_name).resolve()))
-    if dataset not in {"", "all"}:
-        docs = [doc for doc in docs if str(doc.get("dataset", "all")) in {dataset, "all"}]
-    ranked = sorted(docs, key=lambda doc: _score(query, doc), reverse=True)[: max(1, top_k)]
+    entry = _environment_config().get(knowledge_name)
+    backend = entry.get("backend", "lexical") if isinstance(entry, dict) else "lexical"
+    if backend == "xunsearch":
+        from deep_researchbehind.client import search_documents
+        ranked = search_documents(entry, knowledge_name, query, max(1, top_k), dataset)
+    elif backend == "lexical":
+        docs = _load_corpus(str(_resolve_corpus(knowledge_name).resolve()))
+        if dataset not in {"", "all"}:
+            docs = [doc for doc in docs if str(doc.get("dataset", "all")) in {dataset, "all"}]
+        ranked = sorted(docs, key=lambda doc: _score(query, doc), reverse=True)[: max(1, top_k)]
+    else:
+        raise ValueError(f"Unsupported search backend: {backend!r}")
     for doc in ranked:
         _cache_document(knowledge_name, doc)
     result_docs = []
@@ -144,7 +170,7 @@ def search_geo_knowledge_base(
                 "snippet": _snippet(doc),
                 "timestamp": doc.get("timestamp", ""),
                 "source_type": doc.get("source_type", "unknown"),
-                "score": _score(query, doc),
+                "score": doc["score"] if backend == "xunsearch" else _score(query, doc),
             }
         )
     return json.dumps(

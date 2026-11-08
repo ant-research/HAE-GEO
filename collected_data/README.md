@@ -11,7 +11,9 @@ URLs that you supply or that appear in the released clean-page metadata. Once
 you build a corpus, `GEO_eval/geo_qwen_tools.py` searches within that corpus and
 returns ranked results. The current local backend uses a simple lexical score;
 the environment files can also support an external open-source retrieval
-backend. This directory does not replace that score with BM25 or dense retrieval.
+backend. To use the included Xunsearch BM25 integration, follow
+[deep_researchbehind/README.md](../deep_researchbehind/README.md) after building
+the corpus environments. Collection itself does not change the retrieval score.
 
 ## Install
 
