@@ -1,7 +1,6 @@
 # HEO-Bench
 
-This is the sanitized research release accompanying **Evaluating Deep-Search
-Agents under Hierarchical Web Evidence Poisoning**. It contains released benchmark
+This repository contains released benchmark
 data, the controlled L1/L2/L3 page-construction pipeline, Search--Scrape ReAct
 runtime, deterministic trajectory metrics, and the six-dimensional split Judge.
 
