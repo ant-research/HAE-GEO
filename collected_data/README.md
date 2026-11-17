@@ -129,11 +129,13 @@ in `rule&rubric/geo_evaluate.py`. Its current identifiers are:
 - Rule version: `trajectory-state-machine-v3-english-strict-recovery`.
 - Judge prompt version: `split-poison-quality-six-metric-v7-english-full-search-content-no-score-normalization`.
 
-These identify the public English-adapted implementation. This release does
-not establish that it is the frozen implementation used for the paper's
-archived results. Do not label this copy as the paper's exact frozen parser
-without validating that correspondence against the original configuration
-and recorded trajectories.
+These identify the public English-adapted implementation. To compare its
+outputs with archived results, match the trajectory inputs, target and page
+mappings, preprocessing, validity filters, and aggregation settings.
+Re-evaluation of fixed trajectories is distinct from rerunning agents in a
+reconstructed corpus: missing historical webpage bodies do not explain a
+discrepancy when the trajectory inputs are unchanged. See the root README
+for the release scope and numerical and qualitative reproduction limits.
 
 ```bash
 python3 collected_data/corpus_tools.py evaluator-inventory

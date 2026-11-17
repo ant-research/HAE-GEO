@@ -12,9 +12,9 @@ trajectories, and cloud-storage configuration are deliberately excluded.
 This release uses English agent and Judge prompts, page-generation templates,
 example data, and rule-matching vocabulary. Legacy ASCII schema keys and query
 identifiers are retained for compatibility. The English prompts and rules are
-a language adaptation, not a guarantee of equivalence to earlier Chinese
-evaluations. Rerun and validate evaluations when changing language; do not
-reuse archived scores as results of this English configuration.
+a language adaptation. When comparing evaluation outputs, record the parser
+version, input language, preprocessing, and configuration. Changing language
+requires rerunning and validating the evaluation.
 Supply English queries and reference corpora for English-only runs. Imported
 reference-page content is preserved by the template-only modified path; this
 release does not automatically translate external datasets.
@@ -87,8 +87,10 @@ input formats, collection settings, resume behavior, and manifest coverage.
 
 `rule&rubric/geo_evaluate.py` contains the public deterministic trajectory
 parser and English rule vocabulary. It identifies itself as
-`trajectory-state-machine-v3-english-strict-recovery`. This language-adapted
-implementation is not a verified copy of the paper's frozen evaluator.
+`trajectory-state-machine-v3-english-strict-recovery`. The released evaluator
+can be inspected and run independently; comparisons with the reported results
+require matching trajectory inputs, target and page mappings, preprocessing,
+validity filters, and aggregation settings.
 `collected_data/manifests/evaluator_inventory.json` identifies the current
 file by SHA256 and exports its named vocabularies and prompt-version string.
 
@@ -98,6 +100,17 @@ contain historical full-page bodies. Newly collected pages have their own
 content hashes and collection timestamps. These artifacts support inspection
 and new runs; they do not by themselves reproduce the paper's historical
 retrieval environment or certify identical scores.
+
+The release supports investigating the qualitative phenomena reported in the
+paper, including differences across L1--L3 and the effects of defense prompting.
+Exact numerical reproduction is not guaranteed when reconstructing the corpus
+or rerunning agents. Whether the qualitative trends persist in a reconstructed
+environment must also be checked empirically.
+
+Recomputing exposure and FR on fixed archived trajectories is a separate check:
+corpus reconstruction limits do not explain discrepancies in that setting.
+Such discrepancies require comparing evaluator versions, inputs, mappings,
+and configuration before claiming equivalence with the reported evaluation.
 
 ## Install
 
