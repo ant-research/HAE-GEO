@@ -9,17 +9,20 @@ trajectories, and cloud-storage configuration are deliberately excluded.
 
 ## Language
 
-This release uses English agent and Judge prompts, page-generation templates,
-example data, and rule-matching vocabulary. Legacy ASCII schema keys and query
-identifiers are retained for compatibility. The English prompts and rules are
-a language adaptation. When comparing evaluation outputs, record the parser
-version, input language, preprocessing, and configuration. Changing language
-requires rerunning and validating the evaluation.
-Supply English queries and reference corpora for English-only runs. Imported
-reference-page content is preserved by the template-only modified path; this
-release does not automatically translate external datasets.
-The benchmark datasets in `benchmark_data/` retain their original source language;
-the English migration covers code, prompts, documentation, and `data/examples/`.
+The reported experiments used a Chinese-language evaluator, as confirmed by
+the authors. The previously released English-adapted evaluator was translated
+for reviewer readability; our earlier description of that adaptation as the
+version used for the full evaluation was incorrect.
+
+`rule&rubric/geo_evaluate.py` now contains an unchanged copy of the local Chinese
+evaluator, including its Chinese brand matching, endorsement vocabulary, and
+Judge prompts. The previous English adaptation is retained separately as
+`rule&rubric/geo_evaluate_en.py`. Use the Chinese evaluator for Chinese
+trajectories. The English adaptation is not a drop-in evaluator for Chinese
+text. The benchmark datasets retain their original source language; English
+agent prompts, generation templates, and demonstration fixtures remain
+available separately. No automatic translation of input trajectories is
+performed by the Chinese evaluator.
 
 ## Repository map
 
@@ -85,14 +88,17 @@ input formats, collection settings, resume behavior, and manifest coverage.
 
 ### Evaluator version and reproducibility artifacts
 
-`rule&rubric/geo_evaluate.py` contains the public deterministic trajectory
-parser and English rule vocabulary. It identifies itself as
-`trajectory-state-machine-v3-english-strict-recovery`. The released evaluator
-can be inspected and run independently; comparisons with the reported results
-require matching trajectory inputs, target and page mappings, preprocessing,
-validity filters, and aggregation settings.
-`collected_data/manifests/evaluator_inventory.json` identifies the current
-file by SHA256 and exports its named vocabularies and prompt-version string.
+`rule&rubric/geo_evaluate.py` is the restored Chinese evaluator, with rule version
+`trajectory-state-machine-v2-strict-recovery`. Its source-copy SHA256 and
+provenance are recorded in `rule&rubric/chinese_evaluator_provenance.json`.
+The file was copied byte-for-byte, without changing its rules to fit reported
+scores. `collected_data/manifests/evaluator_inventory.json` records the current
+hash, vocabularies, and Judge prompt version.
+
+See [Chinese evaluator validation](rule&rubric/CHINESE_EVALUATOR.md) for commands,
+input requirements, exposure semantics, and the limits of the completed checks.
+We have verified Chinese matching and source attribution with offline tests;
+this is not a completed reproduction of the paper's full archived results.
 
 `collected_data/manifests/clean_urls.jsonl` provides a deduplicated URL manifest
 for the released clean subset. It does not cover all original clean pages or

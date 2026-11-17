@@ -1,0 +1,10 @@
+{
+  "date": "2026-11-17",
+  "source_repository_commit": "1c4afd4d8009b2b4a58a9b7ca9b49e9ce0057952",
+  "source_path": "rule&rubric/geo_evaluate.py",
+  "released_path": "rule&rubric/geo_evaluate.py",
+  "sha256": "166a331a7507d2eca65a19e43b1e0e0cb1a9d31a8eb39f1a511e45601c730f85",
+  "preservation": "Byte-for-byte copy of the local Chinese evaluator; rules unchanged.",
+  "provenance": "Authors confirm the reported evaluation used the Chinese evaluator; correspondence of full archived outputs has not been independently verified in this release check.",
+  "english_adaptation_path": "rule&rubric/geo_evaluate_en.py"
+}

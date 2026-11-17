@@ -126,10 +126,11 @@ recover historical page bodies or establish that a result trend persists.
 The repository includes the deterministic parser and named rule vocabularies
 in `rule&rubric/geo_evaluate.py`. Its current identifiers are:
 
-- Rule version: `trajectory-state-machine-v3-english-strict-recovery`.
-- Judge prompt version: `split-poison-quality-six-metric-v7-english-full-search-content-no-score-normalization`.
+- Rule version: `trajectory-state-machine-v2-strict-recovery`.
+- Judge prompt version: `split-poison-quality-six-metric-v6-full-search-content-no-score-normalization`.
 
-These identify the public English-adapted implementation. To compare its
+These identify the restored Chinese implementation. The English adaptation is
+retained separately as `rule&rubric/geo_evaluate_en.py`. To compare its
 outputs with archived results, match the trajectory inputs, target and page
 mappings, preprocessing, validity filters, and aggregation settings.
 Re-evaluation of fixed trajectories is distinct from rerunning agents in a

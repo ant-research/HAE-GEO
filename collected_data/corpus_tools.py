@@ -145,7 +145,7 @@ def evaluator_inventory(source, output):
         evaluator_path='rule&rubric/geo_evaluate.py', evaluator_sha256=digest(source),
         rule_metric_version=values.get('RULE_METRIC_VERSION'),
         judge_prompt_version=values.get('JUDGE_PROMPT_VERSION'),
-        release_role='English language-adapted public evaluator',
+        release_role='Original local Chinese evaluator, restored for Chinese trajectories',
         paper_frozen_equivalence_verified=False,
         named_rule_vocabulary=vocabulary,
         note='This inventory identifies the current public file. A version string or hash alone '
